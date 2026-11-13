@@ -4,6 +4,7 @@ Newest first. Dates are when the build was pushed.
 
 ## Nov 13 2026
 
+- **Cluster Themes 0.14.10, HUD Widgets 0.12.9:** a new readout for plug-in hybrids, **Electric range**. It is the high-voltage battery's charge (the same SME read as Hybrid battery) times a new setting, **Electric range when full** (20 to 80 km, 40 by default; the X3 xDrive30e is rated 42 to 50 km by WLTP, real driving gives less, so set what your car really does). It is an estimate that falls in a straight line with the charge, not BMW's own figure, and it does not account for temperature, speed or the climate. Pick it in the Readouts tab for any slot, for example in place of Oil. Not yet checked on a car: like Hybrid battery, it depends on the battery unit answering.
 - **Cluster Themes 0.14.9, HUD Widgets 0.12.8:** quieter logs. A layer that takes a moment to appear after a theme or layout loads (its pixels are still on their way to cluster-render) is normal and is no longer logged as a warning. The apps now warn only when a layer is still missing after 5 seconds, naming the part of the layout, and note when it shows up.
 - **Cluster Themes 0.14.8:** a new setting, off by default: **Leave room for the driver camera**, for newer cars with a camera in the top middle of the cluster. The shift lights and rev bars of GT3, Track, Dyno and Rally become two mirrored wings either side of the camera that fill from the outer ends in towards it, Track's rpm numbers are left out and M's logo is hidden. Not yet tested on a car with a camera; please report how it lines up on yours.
 
