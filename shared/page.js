@@ -92,6 +92,7 @@ class Page {
         if (s.type === 'number' && WARN_KEYS.indexOf(k) >= 0) return warnText(k, v, this.get('units') === 'us');
         if (k === 'timeZone') return tzText(v);
         if (k === 'tankLitres') return fmtInt(v) + ' L';
+        if (k === 'evRangeFull') return fmtInt(v) + (this.get('units') === 'us' ? ' km (' + fmtInt(v * 0.621371) + ' mi)' : ' km');
         if (s.type === 'number') return k === 'shiftBefore' ? (v ? fmtInt(v) + ' rpm before' : 'At the redline') : fmtInt(v) + ' rpm';
         return this.optLabel(k, v);
     }
