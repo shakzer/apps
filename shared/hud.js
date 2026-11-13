@@ -268,6 +268,7 @@ const TILE_BAR = {
     ambient: { raw: 'ambient', min: -20, max: 45 }, gLat: { raw: 'gLat', min: 0, max: 1.2, z: 1, abs: true },
     gLong: { raw: 'gLong', min: 0, max: 1.2, z: 1, abs: true }, fuel: { raw: 'fuel', min: 0, max: 1 },
     range: { raw: 'range', min: 0, max: 700 }, hvSoc: { raw: 'hvSoc', min: 0, max: 100 },
+    evRange: { raw: 'hvSoc', min: 0, max: 100 },     // the charge itself: a full bar is a full battery
 };
 const TILE_MAX = 14;       // half a flash: red, then the normal colour
 // the shift-light test (page.js Alerts): rpm climbs from TEST_FROM to just past the shift point, then holds
@@ -508,7 +509,7 @@ class HudApp {
         const j = JSON.stringify(shown) + ' ' + ids.join(' ');
         this.needsBoost = /boost/.test(j);
         this.needsIntake = /intake/.test(j);
-        this.needsHv = /hvSoc/.test(j);
+        this.needsHv = /hvSoc|evRange/.test(j);
         this.needsFuel = /fuel/i.test(j);
     }
     /** A sensor's value now, as its slot shows it ('--' without one). */
@@ -1267,6 +1268,7 @@ class HudApp {
         }
         if (name === 'rpm' && isNum(this.rpmF)) return this.rpmF;
         if (name === 'hvSoc') return isNum(this.hvSoc) && Date.now() - this.hvSocAt < HV_STALE_MS ? this.hvSoc : this.car.data().demo ? 64 : null;
+        if (name === 'evRange') { const c = this._raw('hvSoc'); return isNum(c) ? c * this._evRangeFull() / 100 : null; }
         if (name === 'fuel' || name === 'range' || name === 'ambient') {
             // the kit's demo drive has none of these: made-up but steady values while it runs
             const demo = this.car.data().demo;
@@ -1372,6 +1374,7 @@ class HudApp {
                 return String(Math.round(us ? kw * 1.341 : kw));
             }
             case 'hvSoc': { const v = this._raw('hvSoc'); return isNum(v) ? String(Math.round(v)) : '--'; }
+            case 'evRange': { const v = this._raw('evRange'); return isNum(v) ? String(Math.round(us ? v * 0.621371 : v)) : '--'; }
             case 'fuelPct': { const v = this._raw('fuel'); return isNum(v) ? String(Math.round(v * 100)) : '--'; }
             case 'ambientN': { const v = this._raw('ambient'); return isNum(v) ? String(Math.round(us ? v * 9 / 5 + 32 : v)) : '--'; }
             case 'torque': { const v = this._raw('torque'); return fix(isNum(v) ? (us ? v * 0.737562 : v) : v, 0); }
@@ -1440,6 +1443,12 @@ class HudApp {
                 if (tok.indexOf('signal:') === 0) { const v = this._raw(tok.slice(7)); return isNum(v) ? (Math.round(v * 10) / 10).toString() : '--'; }
                 return '{{' + tok + '}}';
         }
+    }
+
+    /** The electric range of a full battery in km: the "evRangeFull" setting, else config.evRangeFull (the car's WLTP figure is 42-50 km, real driving less). */
+    _evRangeFull() {
+        const s = this.ctx.settings.item('evRangeFull') ? this.setting('evRangeFull') : null;
+        return isNum(s) && s > 0 ? s : (this.config.evRangeFull || 40);
     }
 
     /** The fuel tank's size in litres: the "tankLitres" setting, else config.tankLitres (the car sends litres only). */
