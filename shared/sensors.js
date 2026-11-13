@@ -33,6 +33,8 @@ const LIST = [
     { id: 'range', name: 'Range', cat: 'Fuel', head: 'RANGE', tok: 'range', unit: (us) => (us ? 'MI' : 'KM') },
     // plug-in hybrids (330e, X5 45e ...): the high-voltage battery's charge, read from its battery unit (hud.js HV_SOC)
     { id: 'hvSoc', name: 'Hybrid battery (plug-in hybrids)', cat: 'Fuel', head: 'BATTERY', tok: 'hvSoc', unit: () => '%' },
+    // the same charge as a distance: charge % x the "evRangeFull" setting (hud.js _raw 'evRange'); an estimate, not BMW's own figure
+    { id: 'evRange', name: 'Electric range (plug-in hybrids)', cat: 'Fuel', head: 'EV RANGE', tok: 'evRange', unit: (us) => (us ? 'MI' : 'KM') },
     { id: 'tyrePFL', name: 'Tyre pressure, front left', cat: 'Tyres', head: 'FL', tok: 'tyreP:FL', unit: P },
     { id: 'tyrePFR', name: 'Tyre pressure, front right', cat: 'Tyres', head: 'FR', tok: 'tyreP:FR', unit: P },
     { id: 'tyrePRL', name: 'Tyre pressure, rear left', cat: 'Tyres', head: 'RL', tok: 'tyreP:RL', unit: P },
